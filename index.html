@@ -3,100 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Адвент-календарь</title>
-<!-- Подключаем скрипт Telegram -->
+<title>Новогодний Адвент</title>
+<!-- Скрипт Telegram Mini Apps -->
 <script src="https://telegram.org"></script>
-<!-- Подключаем бесплатную библиотеку конфетти -->
+<!-- Скрипт для запуска конфетти -->
 <script src="https://jsdelivr.net"></script>
 <style>
 body {
-font-family: sans-serif;
-background-color: var(--tg-theme-bg-color, #1a1a2e);
-color: var(--tg-theme-text-color, #ffffff);
+background: linear-gradient(180deg, #141e30 0%, #243b55 100%);
+color: #ffffff;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+margin: 0;
+padding: 20px 15px;
+min-height: 100vh;
+box-sizing: border-box;
 text-align: center;
-padding: 15px;
 }
-.grid {
+h1 {
+font-size: 24px;
+margin: 0 0 8px 0;
+}
+p.subtitle {
+font-size: 14px;
+color: #cbd5e1;
+margin: 0 0 24px 0;
+}
+/* Сетка календаря: 4 окошка в ряд */
+.calendar-grid {
 display: grid;
 grid-template-columns: repeat(4, 1fr);
-gap: 10px;
-margin-top: 20px;
+gap: 12px;
+max-width: 400px;
+margin: 0 auto;
 }
+/* Оформление каждого окошка */
 .day-btn {
-background: #e94560;
-color: white;
+aspect-ratio: 1 / 1;
 border: none;
-border-radius: 12px;
-padding: 20px 0;
-font-size: 18px;
+border-radius: 16px;
+font-size: 16px;
 font-weight: bold;
+color: white;
+background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
+box-shadow: 0 4px 12px rgba(229, 45, 39, 0.35);
 cursor: pointer;
-transition: transform 0.2s;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 4px;
+transition: transform 0.15s ease;
 }
 .day-btn:active {
-transform: scale(0.95);
+transform: scale(0.92);
 }
+/* Оформление закрытых дней */
 .day-btn.locked {
-background: #444;
-color: #888;
+background: rgba(255, 255, 255, 0.08);
+border: 1px solid rgba(255, 255, 255, 0.15);
+box-shadow: none;
+color: #94a3b8;
 cursor: not-allowed;
+}
+.day-btn.locked:active {
+transform: none;
+}
+.icon {
+font-size: 20px;
 }
 </style>
 </head>
 <body>
-<h2>🎄 Новогодний Адвент</h2>
-<p>Нажми на открытый день, чтобы забрать задание!</p>
-<div class="grid" id="calendar"></div>
+
+<h1>🎄 Новогодний Адвент</h1>
+<p class="subtitle">Нажми на открытый день, чтобы забрать задание!</p>
+
+<!-- Контейнер, куда скрипт добавит все 31 окошко -->
+<div id="calendar" class="calendar-grid"></div>
 
 <script>
 const tg = window.Telegram.WebApp;
-tg.expand(); // Разворачиваем окно на весь экран
-
-// ВСТАВЬТЕ СЮДА ВАШ WEBHOOK ИЗ N8N
-const N8N_WEBHOOK_URL = 'https://n8n-yulia-yulialunan8n.waw0.amvera.tech/webhook/28b6c2b0-a1f6-484c-8e43-b009fefc7c8c';
+tg.expand();
 
 const calendar = document.getElementById('calendar');
 const today = new Date();
-// Для теста ставим 10 число, в декабре можно использовать today.getDate()
-const currentDay = today.getDate(); 
+
+// Сейчас стоит 10 число для проверки красоты сетки. 
+// Перед 1 декабря замените 10 на today.getDate()
+const currentDay = 10; 
 
 for (let day = 1; day <= 31; day++) {
 const btn = document.createElement('button');
 btn.className = 'day-btn';
-btn.innerText = day <= currentDay ? 🎁 ${day} : 🔒 ${day};
 
-if (day > currentDay) {
-btn.classList.add('locked');
-} else {
+if (day <= currentDay) {
+btn.innerHTML = <span class="icon">🎁</span><span>${day}</span>;
 btn.onclick = () => openGift(day);
+} else {
+btn.classList.add('locked');
+btn.innerHTML = <span class="icon">🔒</span><span>${day}</span>;
+btn.onclick = () => {
+if (tg.showAlert) {
+tg.showAlert(Этот день откроется ${day} декабря!);
+} else {
+alert(Этот день откроется ${day} декабря!);
 }
+};
+}
+
 calendar.appendChild(btn);
 }
 
 function openGift(day) {
-// 1. Запускаем конфетти
+// Запуск конфетти
 confetti({
 particleCount: 100,
 spread: 70,
 origin: { y: 0.6 }
 });
 
-// 2. Вибрация телефона (приятный отклик)
+// Вибрация на телефоне
+if (tg.HapticFeedback) {
 tg.HapticFeedback.notificationOccurred('success');
-
-// 3. Отправляем данные в n8n, чтобы бот прислал задание и PDF в чат
-const userId = tg.initDataUnsafe?.user?.id;
-
-fetch(N8N_WEBHOOK_URL, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ chat_id: userId, day: day })
-}).then(() => {
-tg.showAlert(Подарок за ${day} декабря отправлен вам в чат с ботом!);
-}).catch(() => {
-tg.showAlert(День ${day} открыт! Проверьте чат с ботом.);
-});
+  // Показываем сообщение с заданием (позже сюда можно подставить свои тексты)
+setTimeout(() => {
+const message = 🎉 Поздравляем! Ты открыл задание за ${day} декабря.;
+if (tg.showAlert) {
+tg.showAlert(message);
+} else {
+alert(message);
+}
+}, 400);
 }
 </script>
 </body>
 </html>
+}

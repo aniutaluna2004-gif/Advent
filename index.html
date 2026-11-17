@@ -1,174 +1,186 @@
+Аня:
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Новогодний Адвент</title>
-    <style>
-        body {
-            background: linear-gradient(180deg, #141e30 0%, #243b55 100%);
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 20px 15px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            text-align: center;
-        }
-        h1 {
-            font-size: 24px;
-            margin: 0 0 8px 0;
-        }
-        p.subtitle {
-            font-size: 14px;
-            color: #cbd5e1;
-            margin: 0 0 24px 0;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .day-btn {
-            aspect-ratio: 1 / 1;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
-            box-shadow: 0 4px 12px rgba(229, 45, 39, 0.35);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-        .day-btn.locked {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: none;
-            color: #94a3b8;
-            cursor: not-allowed;
-        }
-        .icon {
-            font-size: 20px;
-        }
-        /* Всплывающее окно с заданием */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .modal-content {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 340px;
-            width: 100%;
-            text-align: center;
-        }
-        .close-btn {
-            margin-top: 16px;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 12px;
-            background: #e52d27;
-            color: white;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Новогодний Адвент</title>
+<style>
+body {
+background: linear-gradient(180deg, #141e30 0%, #243b55 100%);
+color: #ffffff;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+margin: 0;
+padding: 20px 15px;
+min-height: 100vh;
+box-sizing: border-box;
+text-align: center;
+}
+h1 {
+font-size: 24px;
+margin: 0 0 8px 0;
+}
+p.subtitle {
+font-size: 14px;
+color: #cbd5e1;
+margin: 0 0 24px 0;
+}
+.calendar-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 12px;
+max-width: 400px;
+margin: 0 auto;
+}
+/* Тёплый бежевый стиль для открытых дней */
+.day-btn {
+aspect-ratio: 1 / 1;
+border: 2px solid #e6d3b3;
+border-radius: 16px;
+font-size: 17px;
+font-weight: bold;
+color: #4a3525;
+background: linear-gradient(135deg, #fdf6e9 0%, #f3e2c7 100%);
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+cursor: pointer;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 4px;
+transition: transform 0.15s ease;
+}
+.day-btn:active {
+transform: scale(0.92);
+}
+/* Тёмный полупрозрачный стиль для закрытых дней */
+.day-btn.locked {
+background: rgba(255, 255, 255, 0.08);
+border: 1px solid rgba(255, 255, 255, 0.15);
+box-shadow: none;
+color: #94a3b8;
+cursor: not-allowed;
+}
+.day-btn.locked:active {
+transform: none;
+}
+.icon {
+font-size: 22px;
+}
+/* Всплывающее окно с заданием */
+.modal {
+display: none;
+position: fixed;
+top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(0, 0, 0, 0.75);
+align-items: center;
+justify-content: center;
+padding: 20px;
+box-sizing: border-box;
+}
+.modal-content {
+background: #1e293b;
+border: 1px solid #334155;
+border-radius: 20px;
+padding: 24px;
+max-width: 340px;
+width: 100%;
+text-align: center;
+}
+.close-btn {
+margin-top: 16px;
+padding: 10px 24px;
+border: none;
+border-radius: 12px;
+background: #f3e2c7;
+color: #4a3525;
+font-weight: bold;
+font-size: 15px;
+cursor: pointer;
+}
+</style>
 </head>
 <body>
 
-    <h1>🎄 Новогодний Адвент</h1>
-    <p class="subtitle">Нажми на открытый день, чтобы забрать задание!</p>
+<h1>🎄 Новогодний Адвент</h1>
+<p class="subtitle">Нажми на открытый день, чтобы забрать задание!</p>
 
-    <div class="calendar-grid">
-        <button class="day-btn" onclick="openDay(1)"><span class="icon">🎁</span><span>1</span></button>
-        <button class="day-btn" onclick="openDay(2)"><span class="icon">🎁</span><span>2</span></button>
-        <button class="day-btn" onclick="openDay(3)"><span class="icon">🎁</span><span>3</span></button>
-        <button class="day-btn" onclick="openDay(4)"><span class="icon">🎁</span><span>4</span></button>
-        <button class="day-btn" onclick="openDay(5)"><span class="icon">🎁</span><span>5</span></button>
-        <button class="day-btn" onclick="openDay(6)"><span class="icon">🎁</span><span>6</span></button>
-        <button class="day-btn" onclick="openDay(7)"><span class="icon">🎁</span><span>7</span></button>
-        <button class="day-btn" onclick="openDay(8)"><span class="icon">🎁</span><span>8</span></button>
-        <button class="day-btn" onclick="openDay(9)"><span class="icon">🎁</span><span>9</span></button>
-        <button class="day-btn" onclick="openDay(10)"><span class="icon">🎁</span><span>10</span></button>
-        <button class="day-btn" onclick="openDay(11)"><span class="icon">🎁</span><span>11</span></button>
-        <button class="day-btn" onclick="openDay(12)"><span class="icon">🎁</span><span>12</span></button>
-        <button class="day-btn" onclick="openDay(13)"><span class="icon">🎁</span><span>13</span></button>
-        <button class="day-btn" onclick="openDay(14)"><span class="icon">🎁</span><span>14</span></button>
-        <button class="day-btn" onclick="openDay(15)"><span class="icon">🎁</span><span>15</span></button>
-        <button class="day-btn" onclick="openDay(16)"><span class="icon">🎁</span><span>16</span></button>
-        <button class="day-btn" onclick="openDay(17)"><span class="icon">🎁</span><span>17</span></button>
-        <button class="day-btn" onclick="openDay(18)"><span class="icon">🎁</span><span>18</span></button>
-        <button class="day-btn" onclick="openDay(19)"><span class="icon">🎁</span><span>19</span></button>
-        <button class="day-btn" onclick="openDay(20)"><span class="icon">🎁</span><span>20</span></button>
-        <button class="day-btn" onclick="openDay(21)"><span class="icon">🎁</span><span>21</span></button>
-        <button class="day-btn" onclick="openDay(22)"><span class="icon">🎁</span><span>22</span></button>
-        <button class="day-btn" onclick="openDay(23)"><span class="icon">🎁</span><span>23</span></button>
-        <button class="day-btn" onclick="openDay(24)"><span class="icon">🎁</span><span>24</span></button>
-        <button class="day-btn" onclick="openDay(25)"><span class="icon">🎁</span><span>25</span></button>
-        <button class="day-btn" onclick="openDay(26)"><span class="icon">🎁</span><span>26</span></button>
-        <button class="day-btn" onclick="openDay(27)"><span class="icon">🎁</span><span>27</span></button>
-        <button class="day-btn" onclick="openDay(28)"><span class="icon">🎁</span><span>28</span></button>
-        <button class="day-btn" onclick="openDay(29)"><span class="icon">🎁</span><span>29</span></button>
-        <button class="day-btn" onclick="openDay(30)"><span class="icon">🎁</span><span>30</span></button>
-        <button class="day-btn" onclick="openDay(31)"><span class="icon">🎁</span><span>31</span></button>
-    </div>
+<div class="calendar-grid">
+<button class="day-btn" onclick="openDay(1)"><span class="icon">🎁</span><span>1</span></button>
+<button class="day-btn" onclick="openDay(2)"><span class="icon">🎁</span><span>2</span></button>
+<button class="day-btn" onclick="openDay(3)"><span class="icon">🎁</span><span>3</span></button>
+<button class="day-btn" onclick="openDay(4)"><span class="icon">🎁</span><span>4</span></button>
+<button class="day-btn" onclick="openDay(5)"><span class="icon">🎁</span><span>5</span></button>
+<button class="day-btn" onclick="openDay(6)"><span class="icon">🎁</span><span>6</span></button>
 
-    <!-- Всплывающее окно внутри страницы -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2 id="modal-title" style="margin-top:0;">День 1</h2>
-            <p id="modal-text" style="color:#cbd5e1; line-height:1.5;">Текст задания</p>
-            <button class="close-btn" onclick="closeModal()">Отлично!</button>
-        </div>
-    </div>
+Аня:
+<button class="day-btn" onclick="openDay(7)"><span class="icon">🎁</span><span>7</span></button>
+<button class="day-btn" onclick="openDay(8)"><span class="icon">🎁</span><span>8</span></button>
+<button class="day-btn" onclick="openDay(9)"><span class="icon">🎁</span><span>9</span></button>
+<button class="day-btn" onclick="openDay(10)"><span class="icon">🎁</span><span>10</span></button>
+<button class="day-btn" onclick="openDay(11)"><span class="icon">🎁</span><span>11</span></button>
+<button class="day-btn" onclick="openDay(12)"><span class="icon">🎁</span><span>12</span></button>
+<button class="day-btn" onclick="openDay(13)"><span class="icon">🎁</span><span>13</span></button>
+<button class="day-btn" onclick="openDay(14)"><span class="icon">🎁</span><span>14</span></button>
+<button class="day-btn" onclick="openDay(15)"><span class="icon">🎁</span><span>15</span></button>
+<button class="day-btn" onclick="openDay(16)"><span class="icon">🎁</span><span>16</span></button>
+<button class="day-btn" onclick="openDay(17)"><span class="icon">🎁</span><span>17</span></button>
+<button class="day-btn" onclick="openDay(18)"><span class="icon">🎁</span><span>18</span></button>
+<button class="day-btn" onclick="openDay(19)"><span class="icon">🎁</span><span>19</span></button>
+<button class="day-btn" onclick="openDay(20)"><span class="icon">🎁</span><span>20</span></button>
+<button class="day-btn" onclick="openDay(21)"><span class="icon">🎁</span><span>21</span></button>
+<button class="day-btn" onclick="openDay(22)"><span class="icon">🎁</span><span>22</span></button>
+<button class="day-btn" onclick="openDay(23)"><span class="icon">🎁</span><span>23</span></button>
+<button class="day-btn" onclick="openDay(24)"><span class="icon">🎁</span><span>24</span></button>
+<button class="day-btn" onclick="openDay(25)"><span class="icon">🎁</span><span>25</span></button>
+<button class="day-btn" onclick="openDay(26)"><span class="icon">🎁</span><span>26</span></button>
+<button class="day-btn" onclick="openDay(27)"><span class="icon">🎁</span><span>27</span></button>
+<button class="day-btn" onclick="openDay(28)"><span class="icon">🎁</span><span>28</span></button>
+<button class="day-btn" onclick="openDay(29)"><span class="icon">🎁</span><span>29</span></button>
+<button class="day-btn" onclick="openDay(30)"><span class="icon">🎁</span><span>30</span></button>
+<button class="day-btn" onclick="openDay(31)"><span class="icon">🎁</span><span>31</span></button>
+</div>
 
-    <script>
-        // Для проверки открыты первые 10 дней. Перед стартом замените 10 на new Date().getDate()
-        const currentDay = 10; 
+<div id="modal" class="modal">
+<div class="modal-content">
+<h2 id="modal-title" style="margin-top:0;">День 1</h2>
+<p id="modal-text" style="color:#cbd5e1; line-height:1.5;">Текст задания</p>
+<button class="close-btn" onclick="closeModal()">Отлично!</button>
+</div>
+</div>
 
-        // Сразу блокируем будущие дни
-        const buttons = document.querySelectorAll('.day-btn');
-        buttons.forEach((btn, index) => {
-            const dayNumber = index + 1;
-            if (dayNumber > currentDay) {
-                btn.classList.add('locked');
-                btn.innerHTML = <span class="icon">🔒</span><span>${dayNumber}</span>;
-            }
-        });
+<script>
+// Для проверки открыты первые 10 дней. Перед 1 декабря замените 10 на new Date().getDate()
+var currentDay = 10; 
 
-        function openDay(day) {
-            const title = document.getElementById('modal-title');
-            const text = document.getElementById('modal-text');
-            
-            if (day > currentDay) {
-                title.innerText = '🔒 Рано!';
-                text.innerText = Это окошко откроется ${day} декабря. Возвращайся позже!;
-            } else {
-                title.innerText = 🎉 День ${day};
-                text.innerText = Твоё задание на ${day} декабря: завари вкусный чай и загадай желание!;
-            }
-            document.getElementById('modal').style.display = 'flex';
-        }
+var buttons = document.querySelectorAll('.day-btn');
+for (var i = 0; i < buttons.length; i++) {
+var dayNumber = i + 1;
+if (dayNumber > currentDay) {
+buttons[i].classList.add('locked');
+buttons[i].innerHTML = '<span class="icon">🔒</span><span>' + dayNumber + '</span>';
+}
+}
 
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-    </script>
+function openDay(day) {
+var title = document.getElementById('modal-title');
+var text = document.getElementById('modal-text');
+
+if (day > currentDay) {
+title.innerText = '🔒 Рано!';
+text.innerText = 'Это окошко откроется ' + day + ' декабря. Возвращайся позже!';
+
+Аня:
+} else {
+title.innerText = '🎉 День ' + day;
+text.innerText = 'Твоё задание на ' + day + ' декабря: завари вкусный чай и загадай желание!';
+}
+document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+document.getElementById('modal').style.display = 'none';
+}
+</script>
 </body>
 </html>

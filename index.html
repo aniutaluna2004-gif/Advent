@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Новогодний Адвент</title>
-<!-- Скрипт Telegram Mini Apps -->
 <script src="https://telegram.org"></script>
-<!-- Скрипт для запуска конфетти -->
 <script src="https://jsdelivr.net"></script>
 <style>
 body {
@@ -28,7 +26,6 @@ font-size: 14px;
 color: #cbd5e1;
 margin: 0 0 24px 0;
 }
-/* Сетка календаря: 4 окошка в ряд */
 .calendar-grid {
 display: grid;
 grid-template-columns: repeat(4, 1fr);
@@ -36,7 +33,6 @@ gap: 12px;
 max-width: 400px;
 margin: 0 auto;
 }
-/* Оформление каждого окошка */
 .day-btn {
 aspect-ratio: 1 / 1;
 border: none;
@@ -57,7 +53,6 @@ transition: transform 0.15s ease;
 .day-btn:active {
 transform: scale(0.92);
 }
-/* Оформление закрытых дней */
 .day-btn.locked {
 background: rgba(255, 255, 255, 0.08);
 border: 1px solid rgba(255, 255, 255, 0.15);
@@ -78,18 +73,15 @@ font-size: 20px;
 <h1>🎄 Новогодний Адвент</h1>
 <p class="subtitle">Нажми на открытый день, чтобы забрать задание!</p>
 
-<!-- Контейнер, куда скрипт добавит все 31 окошко -->
 <div id="calendar" class="calendar-grid"></div>
 
 <script>
-const tg = window.Telegram.WebApp;
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+if (tg) {
 tg.expand();
+}
 
 const calendar = document.getElementById('calendar');
-const today = new Date();
-
-// Сейчас стоит 10 число для проверки красоты сетки. 
-// Перед 1 декабря замените 10 на today.getDate()
 const currentDay = 10; 
 
 for (let day = 1; day <= 31; day++) {
@@ -103,10 +95,11 @@ btn.onclick = () => openGift(day);
 btn.classList.add('locked');
 btn.innerHTML = <span class="icon">🔒</span><span>${day}</span>;
 btn.onclick = () => {
-if (tg.showAlert) {
-tg.showAlert(Этот день откроется ${day} декабря!);
+const text = Этот день откроется ${day} декабря!;
+if (tg && tg.showAlert) {
+tg.showAlert(text);
 } else {
-alert(Этот день откроется ${day} декабря!);
+alert(text);
 }
 };
 }
@@ -115,27 +108,27 @@ calendar.appendChild(btn);
 }
 
 function openGift(day) {
-// Запуск конфетти
+if (typeof confetti === 'function') {
 confetti({
 particleCount: 100,
 spread: 70,
 origin: { y: 0.6 }
 });
+}
 
-// Вибрация на телефоне
-if (tg.HapticFeedback) {
+if (tg && tg.HapticFeedback) {
 tg.HapticFeedback.notificationOccurred('success');
-  // Показываем сообщение с заданием (позже сюда можно подставить свои тексты)
+}
+
 setTimeout(() => {
 const message = 🎉 Поздравляем! Ты открыл задание за ${day} декабря.;
-if (tg.showAlert) {
+if (tg && tg.showAlert) {
 tg.showAlert(message);
 } else {
 alert(message);
 }
-}, 400);
+}, 300);
 }
 </script>
 </body>
 </html>
-}

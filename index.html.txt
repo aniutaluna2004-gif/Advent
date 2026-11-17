@@ -58,7 +58,7 @@ const N8N_WEBHOOK_URL = 'https://n8n-yulia-yulialunan8n.waw0.amvera.tech/webhook
 const calendar = document.getElementById('calendar');
 const today = new Date();
 // Для теста ставим 10 число, в декабре можно использовать today.getDate()
-const currentDay = 10; 
+const currentDay = today.getDate(); 
 
 for (let day = 1; day <= 31; day++) {
 const btn = document.createElement('button');

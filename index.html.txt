@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Адвент-календарь</title>
+<!-- Подключаем скрипт Telegram -->
+<script src="https://telegram.org"></script>
+<!-- Подключаем бесплатную библиотеку конфетти -->
+<script src="https://jsdelivr.net"></script>
+<style>
+body {
+font-family: sans-serif;
+background-color: var(--tg-theme-bg-color, #1a1a2e);
+color: var(--tg-theme-text-color, #ffffff);
+text-align: center;
+padding: 15px;
+}
+.grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 10px;
+margin-top: 20px;
+}
+.day-btn {
+background: #e94560;
+color: white;
+border: none;
+border-radius: 12px;
+padding: 20px 0;
+font-size: 18px;
+font-weight: bold;
+cursor: pointer;
+transition: transform 0.2s;
+}
+.day-btn:active {
+transform: scale(0.95);
+}
+.day-btn.locked {
+background: #444;
+color: #888;
+cursor: not-allowed;
+}
+</style>
+</head>
+<body>
+<h2>🎄 Новогодний Адвент</h2>
+<p>Нажми на открытый день, чтобы забрать задание!</p>
+<div class="grid" id="calendar"></div>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand(); // Разворачиваем окно на весь экран
+
+// ВСТАВЬТЕ СЮДА ВАШ WEBHOOK ИЗ N8N
+const N8N_WEBHOOK_URL = 'https://n8n-yulia-yulialunan8n.waw0.amvera.tech/webhook/28b6c2b0-a1f6-484c-8e43-b009fefc7c8c';
+
+const calendar = document.getElementById('calendar');
+const today = new Date();
+// Для теста ставим 10 число, в декабре можно использовать today.getDate()
+const currentDay = 10; 
+
+for (let day = 1; day <= 31; day++) {
+const btn = document.createElement('button');
+btn.className = 'day-btn';
+btn.innerText = day <= currentDay ? 🎁 ${day} : 🔒 ${day};
+
+if (day > currentDay) {
+btn.classList.add('locked');
+} else {
+btn.onclick = () => openGift(day);
+}
+calendar.appendChild(btn);
+}
+
+function openGift(day) {
+// 1. Запускаем конфетти
+confetti({
+particleCount: 100,
+spread: 70,
+origin: { y: 0.6 }
+});
+
+// 2. Вибрация телефона (приятный отклик)
+tg.HapticFeedback.notificationOccurred('success');
+
+// 3. Отправляем данные в n8n, чтобы бот прислал задание и PDF в чат
+const userId = tg.initDataUnsafe?.user?.id;
+
+fetch(N8N_WEBHOOK_URL, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ chat_id: userId, day: day })
+}).then(() => {
+tg.showAlert(Подарок за ${day} декабря отправлен вам в чат с ботом!);
+}).catch(() => {
+tg.showAlert(День ${day} открыт! Проверьте чат с ботом.);
+});
+}
+</script>
+</body>
+</html>
